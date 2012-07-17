@@ -66,6 +66,6 @@ class TaskManager(object):
     
     def run(self):
         for task in self.tasks:
-            if not task.is_paused:
+            if not task.is_paused():
                 task.run()
         
