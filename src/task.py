@@ -19,8 +19,11 @@
 #####################################################################
 
 class Task(object):
+    ''' Base task class '''
     def __init__(self):
         self._paused = False
+        
+        # These will be filled in on task registration
         self.task = None
         self.engine = None
         
@@ -40,6 +43,7 @@ class Task(object):
         self._paused = value
 
 class TaskManager(object):
+    ''' Manages all tasks '''
     def __init__(self, engine):
         self.tasks = []
         self.engine = engine

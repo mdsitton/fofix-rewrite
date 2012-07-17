@@ -24,7 +24,7 @@ from events import Events
 import scenefactory
 
 class Scene(Layer, Events):
-    ''' Scene base  class '''
+    ''' Scene base class '''
     def __init__(self):
         super(Scene, self).__init__()
         

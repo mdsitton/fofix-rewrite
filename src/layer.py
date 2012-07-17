@@ -21,6 +21,7 @@
 from task import Task
 
 class Layer(Task):
+    ''' Base layer class '''
     def shown(self):
         pass
         
@@ -31,6 +32,7 @@ class Layer(Task):
         pass
     
 class LayerManager(Task):
+    ''' Manages layers '''
     def __init__(self):
         super(LayerManager, self).__init__()
         

@@ -27,6 +27,7 @@ from scene import SceneManager
 from opengl import *
 
 class Engine(object):
+    ''' Necessary game structure, everything ties together here '''
     def __init__(self, config):
         
         
