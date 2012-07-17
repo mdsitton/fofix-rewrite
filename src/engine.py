@@ -68,7 +68,7 @@ class Engine(object):
             self.render()
             
             # Put the frame on screen
-            pygame.display.flip()
+            self.display.flip()
     
     def update(self):
         self.task.run()
