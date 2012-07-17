@@ -51,5 +51,5 @@ class Display(object):
     def flip(self):
         pygame.display.flip()
 
-    def getVideoModes(self):
+    def get_video_modes(self):
         return pygame.display.list_modes()
