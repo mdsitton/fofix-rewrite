@@ -22,6 +22,7 @@ import platform
 import os
 
 class Resource(object):
+    ''' Game recources, functions that will be usefull everywhere '''
     def get_resource_path(self):
         '''
         Returns a path that holds the configuration files

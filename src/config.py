@@ -18,16 +18,14 @@
 # MA  02110-1301, USA.                                              #
 #####################################################################
 
-'''
-Configuration file manager
-'''
-
 from configparser import ConfigParser
 import os
 
 from resource import Resource
         
 class Config(object):
+    ''' Configuration file manager
+        read, save, edit, and store game configuration data '''
     def __init__(self):
         self.resource     = Resource()
         
@@ -75,7 +73,7 @@ class Config(object):
             return type(value)
 
 def define_all(config):
-    '''Configuration values'''
+    ''' All configuration values '''
     
     config['display', 'resolution', str] = '800x600'
     config['display', 'multisamples', int] = '4'

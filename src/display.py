@@ -21,6 +21,7 @@
 import pygame
 
 class Display(object):
+    ''' Window creation '''
     def __init__(self, title = "Game", icon = None):
         self.window       = None
         self.title        = title

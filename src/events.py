@@ -22,6 +22,7 @@ import pygame
 from task import Task
 
 class Events(Task):
+    ''' Base event listener class '''
     def __init__(self):
         super(Events, self).__init__()
     
@@ -36,6 +37,7 @@ class Events(Task):
 
         
 class EventManager(Task):
+    ''' Manages all events, and dispatches them to regestered listeners '''
     def __init__(self):
         super(EventManager, self).__init__()
         
