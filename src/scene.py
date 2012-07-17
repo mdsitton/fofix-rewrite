@@ -24,6 +24,7 @@ from events import Events
 import scenefactory
 
 class Scene(Layer, Events):
+    ''' Scene base  class '''
     def __init__(self):
         super(Scene, self).__init__()
         
@@ -40,6 +41,7 @@ class Scene(Layer, Events):
         pass
 
 class SceneManager(Task):
+    ''' Manages the destruction/creation of scenes'''
     def __init__(self):
         super(SceneManager, self).__init__()
         
@@ -47,16 +49,21 @@ class SceneManager(Task):
         self.sceneName = None
         
         self.layer = None
+        self.events = None
     
-    def create(self, name, **args):
+    def create(self, name, *args):
         self.layer = self.engine.layer
+        self.events = self.engine.events
+        
         if self.currentScene:
             self.remove()
-        self.currentScene = scenefactory.create(self.engine, name, **args)
+        self.sceneName = name
+        self.currentScene = scenefactory.create(self.engine, name, *args)
         self.layer.add(self.currentScene)
         self.layer.add(self.currentScene)
         
     def remove(self):
-        self.layer.remove(self)
-        self.current
+        self.layer.remove(self.currentScene)
+        self.currentScene = None
+        self.sceneName = None
         
