@@ -33,6 +33,11 @@ class Task(object):
     def stopped(self):
         pass
     
+    def is_paused(self):
+        return self._paused
+    
+    def set_pause(self, value):
+        self._paused = value
 
 class TaskManager(object):
     def __init__(self, engine):
@@ -50,13 +55,13 @@ class TaskManager(object):
             self.tasks.remove(func)
     
     def pause(self, func):
-        func._paused = True
+        func.set_pause(True)
     
     def resume(self, func):
-        func._paused = False
+        func.set_pause(False)
     
     def run(self):
         for task in self.tasks:
-            if not task._paused:
+            if not task.is_paused:
                 task.run()
         
