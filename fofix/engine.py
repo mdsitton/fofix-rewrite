@@ -25,7 +25,7 @@ from fofix.events import EventManager
 from fofix.task import TaskManager
 from fofix.layer import LayerManager
 from fofix.scene import SceneManager
-from fofix.opengl import *
+#from fofix.opengl import *
 
 class Engine(object):
     ''' Necessary game structure, everything ties together here '''
@@ -75,7 +75,7 @@ class Engine(object):
         self.task.run()
     
     def render(self):
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+        #glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         self.layer.render()
     
     def stop(self):
