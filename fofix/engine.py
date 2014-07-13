@@ -18,7 +18,8 @@
 # MA  02110-1301, USA.                                              #
 #####################################################################
 
-from fofix.display import Display
+from fofix import window
+from fofix import context
 from fofix.events import EventManager
 from fofix.task import TaskManager
 from fofix.layer import LayerManager
@@ -34,8 +35,27 @@ class Engine(object):
         self.title = 'FoFiX' # Move to version.py
         
         self.config = config
-        self.display = Display()
+        window.init_video()
+        resolution = config['display', 'resolution']
+
+        width, height = resolution.split('x')
+        width = int(width)
+        height = int(height)
+
+        multisamples = config['display', 'multisamples']
         
+        self.window = window.Window(width, height)
+
+        # Forward Compatible Opengl 3.1 Core Profile Rendering Context
+        # This was chosen as OpenGL 3.1 is the highest supported version on the
+        # Sandy Bridge iGPU when on linux and windows.
+        self.context = context.Context(3, 1, profile=context.PROFILE_CORE,
+                                       flags=context.CONTEXT_FORWARD_COMPATIBLE,
+                                       msaa=multisamples)
+
+        self.window.make_current(self.context)
+
+
         self.task = TaskManager(self)
         self.events = EventManager()
         self.layer = LayerManager()
@@ -46,16 +66,6 @@ class Engine(object):
         self.task.add(self.scene)
         
         self.scene.create("GameScene")
-        
-        resolution = config['display', 'resolution']
-
-        width, height = resolution.split('x')
-        width = int(width)
-        height = int(height)
-
-        multisamples = config['display', 'multisamples']
-        
-        self.display.create_window(width, height,  msaa = multisamples)
         
         self.running = False
         
@@ -70,7 +80,7 @@ class Engine(object):
             self.render()
             
             # Put the frame on screen
-            self.display.flip()
+            self.window.flip()
     
     def update(self):
         self.task.run()

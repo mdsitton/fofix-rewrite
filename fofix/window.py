@@ -22,33 +22,52 @@ import ctypes
 
 import sdl2 as sdl
 
-
+# Fullscreen options
 FS_OFF    = 1  # No fullscreen
 FS_ON     = 2  # Regular fullscreen, sets monitor resolution
 FS_HYBRID = 3  # Window will cover the monitor doesnt change resolution
 
-class Display(object):
-    ''' Window creation '''
-    def __init__(self, title = 'Game', icon = None):
-        sdl.SDL_Init(0)
-        sdl.SDL_InitSubSystem(sdl.SDL_INIT_VIDEO)
+def get_video_modes():
+    modeCount = sdl.SDL_GetNumVideoDisplays()
 
-        self.window       = None
-        self.context      = None
-        self.title        = title.encode('utf-8') # convert title to bytes
-        self.icon         = icon
-        self.fullscreen   = False
-        self.msaa = 0
-        self.width = None
-        self.height = None
-        self.flags = sdl.SDL_WINDOW_OPENGL | sdl.SDL_WINDOW_RESIZABLE
-    
-    def create_window(self, width, height, fullscreen = FS_OFF, msaa = 0):
-        
-        self.fullscreen   = fullscreen
-        self.msaa = msaa
+    modes = []
+
+    if modeCount < 1:
+        print(sdl.SDL_GetError())
+        sdl.SDL_ClearError()
+    else:
+        mode = sdl.SDL_DisplayMode()
+        print (modeCount)
+        for i in range(modeCount):
+            err = sdl.SDL_GetDisplayMode(0, i, ct.pointer(mode))
+            if err != 0:
+                print(sdl.SDL_GetError())
+                sdl.SDL_ClearError()
+                continue
+            modeData = {'x': mode.w, 'y': mode.h, 'hz': mode.refresh_rate}
+            modes.append(modeData)
+
+    return modes
+
+
+def init_video():
+    ''' Init SDL '''
+    sdl.SDL_Init(0)
+    sdl.SDL_InitSubSystem(sdl.SDL_INIT_VIDEO)
+
+class Window(object):
+    ''' Window creation '''
+    def __init__(self, width, height, fullscreen = FS_OFF, 
+                 title = 'Game', icon = None):
+
+        self.title = title.encode('utf-8') # convert title to bytes
+        self.icon = icon
+        self.fullscreen = fullscreen
         self.width = width
         self.height = height
+
+        self.flags = sdl.SDL_WINDOW_OPENGL | sdl.SDL_WINDOW_RESIZABLE
+        
 
         if fullscreen == FS_OFF:
             self.posX = sdl.SDL_WINDOWPOS_CENTERED
@@ -67,45 +86,17 @@ class Display(object):
         self.window = sdl.SDL_CreateWindow(self.title, self.posX, self.posY,
                         self.width, self.height, self.flags)
 
-        # Double buffering
-        sdl.SDL_GL_SetAttribute(sdl.SDL_GL_DOUBLEBUFFER, 1)
-
-        # Opengl 3.1 Core Profile Rendering Context
-        # This was chosen as OpenGL 3.1 is the highest supported version on the
-        # Sandy Bridge iGPU when on linux and windows.
-        sdl.SDL_GL_SetAttribute(sdl.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
-        sdl.SDL_GL_SetAttribute(sdl.SDL_GL_CONTEXT_MINOR_VERSION, 1)
-        sdl.SDL_GL_SetAttribute(sdl.SDL_GL_CONTEXT_PROFILE_MASK, 
-                                sdl.SDL_GL_CONTEXT_PROFILE_CORE)
-
-        if self.msaa > 0:
-            sdl.SDL_GL_SetAttribute(sdl.SDL_GL_MULTISAMPLEBUFFERS, 1)
-            sdl.SDL_GL_SetAttribute(sdl.SDL_GL_MULTISAMPLESAMPLES, self.msaa)
-
-        self.context = sdl.SDL_GL_CreateContext(self.window)
-
-
     def flip(self):
         sdl.SDL_GL_SwapWindow(self.window)
 
-    def get_video_modes(self):
-        modeCount = sdl.SDL_GetNumVideoDisplays()
-
-        modes = []
-
-        if modeCount < 1:
-            print(sdl.SDL_GetError())
-            sdl.SDL_ClearError()
+    def make_current(self, context):
+        if context:
+            window = self.window
+            context.window = self
+            context = context.context
         else:
-            mode = sdl.SDL_DisplayMode()
-            print (modeCount)
-            for i in range(modeCount):
-                err = sdl.SDL_GetDisplayMode(0, i, ct.pointer(mode))
-                if err != 0:
-                    print(sdl.SDL_GetError())
-                    sdl.SDL_ClearError()
-                    continue
-                modeData = {'x': mode.w, 'y': mode.h, 'hz': mode.refresh_rate}
-                modes.append(modeData)
+            window = None
+            context.window = None
+            context = None
 
-        return modes
+        sdl.SDL_GL_MakeCurrent(window, context)
