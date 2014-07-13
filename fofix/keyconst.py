@@ -130,6 +130,41 @@ modmap = {sdl.KMOD_NONE: MOD_NONE,
           sdl.KMOD_NUM: MOD_NUM,
           sdl.KMOD_CAPS: MOD_CAPS}
 
+keystrMap = {KEY_CAPS_LOCK: 'CAPS LOCK',
+             KEY_F1: 'F1',
+             KEY_F2: 'F2',
+             KEY_F3: 'F3',
+             KEY_F4: 'F4',
+             KEY_F5: 'F5',
+             KEY_F6: 'F6',
+             KEY_F7: 'F7',
+             KEY_F8: 'F8',
+             KEY_F9: 'F9',
+             KEY_F10: 'F10',
+             KEY_F11: 'F11',
+             KEY_F12: 'F12',
+             KEY_PRINT_SCREEN: 'PRINT SCREEN',
+             KEY_SCROLL_LOCK: 'SCROLL LOCK',
+             KEY_PAUSE: 'PAUSE',
+             KEY_INSERT: 'INSERT',
+             KEY_HOME: 'HOME',
+             KEY_PAGE_UP: 'PAGE UP',
+             KEY_END: 'END',
+             KEY_PAGE_DOWN: 'PAGE DOWN',
+             KEY_RIGHT: 'RIGHT',
+             KEY_LEFT: 'LEFT',
+             KEY_DOWN: 'DOWN',
+             KEY_UP: 'UP',
+             KEY_NUMLOCK_CLEAR: 'NUMLOCK CLEAR',
+             KEY_LEFT_CTRL: 'LEFT CTRL',
+             KEY_LEFT_SHIFT: 'LEFT SHIFT',
+             KEY_LEFT_ALT: 'LEFT ALT',
+             KEY_LEFT_SUPER: 'LEFT SUPER',
+             KEY_RIGHT_CTRL: 'RIGHT CTRL',
+             KEY_RIGHT_SHIFT: 'RIGHT SHIFT',
+             KEY_RIGHT_ALT: 'RIGHT ALT',
+             KEY_RIGHT_SUPER: 'RIGHT SUPER'}
+
 def process_modkeys(value):
     keys = []
     for key in modmap:
@@ -137,6 +172,17 @@ def process_modkeys(value):
             keys.append(modmap[key])
     return keys
 
+def process_key_char(value):
+    char = None
+    try:
+        char = str(chr(value))
+    except ValueError:
+        temp = value ^ (1<<30)
+        if temp in keymap:
+            
+            char = keystrMap[keymap[temp]]
+
+    return char
 
 keymap = {sdl.SDL_SCANCODE_A: KEY_A,
           sdl.SDL_SCANCODE_B: KEY_B,

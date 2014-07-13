@@ -22,7 +22,7 @@ import ctypes as ct
 import sdl2 as sdl
 
 from fofix.task import Task
-from fofix.keyconst import keymap, process_modkeys
+from fofix.keyconst import keymap, process_modkeys, process_key_char
 
 class Events(Task):
     ''' Base event listener class '''
@@ -84,9 +84,8 @@ class EventManager(Task):
 
             elif event.type == sdl.SDL_KEYDOWN:
                 eventName = 'key_down'
-
-                data = (keymap[event.key.keysym.scancode], 
-                        event.key.keysym.sym,
+                data = (keymap[event.key.keysym.scancode],
+                        process_key_char(event.key.keysym.sym),
                         process_modkeys(event.key.keysym.mod))
 
             elif event.type == sdl.SDL_WINDOWEVENT:

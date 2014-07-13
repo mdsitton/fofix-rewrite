@@ -25,13 +25,13 @@ class GameScene(Scene):
         super(GameScene, self).__init__()
     
     def run(self):
-        print ('herp')
+        pass#print ('herp')
     
     def render(self):
-        print ('derp')
+        pass#print ('derp')
     
-    def key_up(self, *args):
-        print ('hurrr')
+    def key_up(self, key, mod):
+        pass#print ('hurrr')
         
-    def key_down(self, *args):
-        print ('hurrr')
+    def key_down(self, key, char, mod):
+        print (char)
