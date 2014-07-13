@@ -18,22 +18,27 @@
 # MA  02110-1301, USA.                                              #
 #####################################################################
 
-import pygame
+import ctypes as ct
+import sdl2 as sdl
 
 from fofix.task import Task
+from fofix.keyconst import keymap, process_modkeys
 
 class Events(Task):
     ''' Base event listener class '''
     def __init__(self):
         super(Events, self).__init__()
     
-    def key_up(self, unicode, key, mod):
+    def key_up(self, key, mod):
         pass
     
-    def key_down(self, key, mod):
+    def key_down(self, key, char, mod):
         pass
     
-    def screen_active(self, gain, state):
+    def window_close(self):
+        pass
+
+    def window_resize(self, width, height):
         pass
 
         
@@ -41,8 +46,8 @@ class EventManager(Task):
     ''' Manages all events, and dispatches them to regestered listeners '''
     def __init__(self):
         super(EventManager, self).__init__()
+        sdl.SDL_InitSubSystem(sdl.SDL_INIT_EVENTS)
         
-        self.event = pygame.event
         
         self.listeners = []
     
@@ -56,25 +61,46 @@ class EventManager(Task):
             self.engine.task.remove(listener)
             self.listeners.remove(listener)            
         
-    def broadcast_event(self, function, *args):
+    def broadcast_event(self, function, args):
         for listener in self.listeners:
-            getattr(listener, function)(listener, *args)
+            print (args)
+            getattr(listener, function)(*args)
     
     def run(self):
         
         eventName = None
+
+        event = sdl.SDL_Event()
         
-        pygame.event.pump()
-        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        while sdl.SDL_PollEvent(ct.pointer(event)):
+
+            if event.type == sdl.SDL_QUIT:
                 self.engine.stop()
-            elif event.type == pygame.ACTIVEEVENT:
-                eventName = "screen_active"
-            elif event.type == pygame.KEYDOWN:
-                eventName = "key_down"
-            elif event.type == pygame.KEYUP:
-                eventName = "key_up"
+
+            elif event.type == sdl.SDL_KEYUP:
+                eventName = 'key_up'
+
+                data = (keymap[event.key.keysym.scancode],
+                        process_modkeys(event.key.keysym.mod))
+
+            elif event.type == sdl.SDL_KEYDOWN:
+                eventName = 'key_down'
+
+                data = (keymap[event.key.keysym.scancode], 
+                        event.key.keysym.sym,
+                        process_modkeys(event.key.keysym.mod))
+
+            elif event.type == sdl.SDL_WINDOWEVENT:
+                winEvent = event.window.event
+
+                if winEvent == sdl.SDL_WINDOWEVENT_CLOSE:
+                    eventName = 'window_close'
+                    data = tuple()
+                elif winEvent == sdl.SDL_WINDOWEVENT_RESIZED:
+                    eventName = 'window_resize'
+                    data = (event.window.data1, event.window.data2)
+
             if eventName is not None:
-                self.broadcast_event(eventName, event.dict)
+                print (data)
+                self.broadcast_event(eventName, data)
             

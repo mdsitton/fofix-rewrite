@@ -18,8 +18,6 @@
 # MA  02110-1301, USA.                                              #
 #####################################################################
 
-import pygame
-
 from fofix.display import Display
 from fofix.events import EventManager
 from fofix.task import TaskManager
@@ -27,12 +25,11 @@ from fofix.layer import LayerManager
 from fofix.scene import SceneManager
 #from fofix.opengl import *
 
+import OpenGL.GL as gl
+
 class Engine(object):
     ''' Necessary game structure, everything ties together here '''
     def __init__(self, config):
-        
-        
-        pygame.init()
         
         self.title = 'FoFiX' # Move to version.py
         
@@ -48,13 +45,17 @@ class Engine(object):
         self.task.add(self.layer)
         self.task.add(self.scene)
         
-        
         self.scene.create("GameScene")
         
         resolution = config['display', 'resolution']
+
+        width, height = resolution.split('x')
+        width = int(width)
+        height = int(height)
+
         multisamples = config['display', 'multisamples']
         
-        self.display.create_window(resolution, multisamples = multisamples)
+        self.display.create_window(width, height,  msaa = multisamples)
         
         self.running = False
         
@@ -75,7 +76,7 @@ class Engine(object):
         self.task.run()
     
     def render(self):
-        #glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
         self.layer.render()
     
     def stop(self):

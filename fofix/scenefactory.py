@@ -18,10 +18,13 @@
 # MA  02110-1301, USA.                                              #
 #####################################################################
 
-import glob
+import importlib
 
-scenes = [n.replace(".py", "") for n in glob.glob("*scene.py")]
+#dictionary of scenes
+sceneInfo = {
+   "GameScene": "fofix.gamescene"
+}
 
-def create(engine, name, **args):
-    m = __import__(name.lower())
-    return getattr(m, name)(**args)
+def create(name, **args):
+    scene_name = importlib.import_module(sceneInfo[name])
+    return getattr(scene_name, name)(**args)

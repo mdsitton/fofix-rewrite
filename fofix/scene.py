@@ -58,7 +58,7 @@ class SceneManager(Task):
         if self.currentScene:
             self.remove()
         self.sceneName = name
-        self.currentScene = scenefactory.create(self.engine, name, *args)
+        self.currentScene = scenefactory.create(name, *args)
         self.layer.add(self.currentScene)
         self.layer.add(self.currentScene)
         
