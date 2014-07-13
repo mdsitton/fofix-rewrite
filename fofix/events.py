@@ -63,7 +63,6 @@ class EventManager(Task):
         
     def broadcast_event(self, function, args):
         for listener in self.listeners:
-            print (args)
             getattr(listener, function)(*args)
     
     def run(self):
@@ -101,6 +100,5 @@ class EventManager(Task):
                     data = (event.window.data1, event.window.data2)
 
             if eventName is not None:
-                print (data)
                 self.broadcast_event(eventName, data)
             
