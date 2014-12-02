@@ -21,14 +21,12 @@
 from configparser import ConfigParser
 import os
 
-from fofix.core.resource import Resource
-        
+from fofix.core import resource
+
 class Config(object):
     ''' Configuration file manager
         read, save, edit, and store game configuration data '''
     def __init__(self):
-        self.resource     = Resource()
-        
         self.config       = ConfigParser(interpolation=None)
         
         self.configfile = None
@@ -38,7 +36,7 @@ class Config(object):
     def load(self, fileName):
         if fileName:
             if not os.path.isfile(fileName):
-                path = self.resource.get_resource_path()
+                path = resource.get_resource_path()
                 fileName = os.path.join(path, fileName)
 
         self.config.read(fileName)
