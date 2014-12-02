@@ -18,13 +18,49 @@
 # MA  02110-1301, USA.                                              #
 #####################################################################
 
-import importlib
+''' Functions that deal with resources '''
+import platform
+import os
+import sys
 
-#dictionary of scenes
-sceneInfo = {
-   "GameScene": "fofix.gamescene"
-}
+def get_path():
 
-def create(name, **args):
-    scene_name = importlib.import_module(sceneInfo[name])
-    return getattr(scene_name, name)(**args)
+    # sys.path[0] in all cases i have observed is always ''
+    # which when expanded out with os.path.realpath gets us the
+    # current directory.
+    # sys.path[1] 
+    path0 = os.path.realpath('')
+    path1 = os.path.realpath(sys.path[1])
+
+    pathtest = os.sep.join(path0.split(os.sep)[:-1])
+
+    if pathtest == path1:
+        return path1
+    else:
+        return path0
+
+def get_resource_path():
+    '''
+    Returns a path that holds the configuration files
+    '''
+    
+    path = "."
+    
+    osName = platform.system()
+    
+    appname = 'FoFiX' # TODO - Version.PROGRAM_UNIXSTYLE_NAME
+    
+    if osName == "Linux":
+        path = os.path.expanduser("~/.{}".format(appname))
+    elif osName == "Darwin" :
+        path = os.path.expanduser("~/Library/Preferences/{}".format(appname))
+    elif osName == "Windows":
+        path = os.path.expandvars('%APPDATA%\{}'.format(appname))
+        
+    try:
+        os.mkdir(path)
+    except:
+        pass
+        
+    return path
+

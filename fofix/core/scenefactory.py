@@ -18,52 +18,19 @@
 # MA  02110-1301, USA.                                              #
 #####################################################################
 
-from fofix.layer import Layer
-from fofix.task import Task
-from fofix.events import Events
-from fofix import scenefactory
+import importlib
+from fofix.core.resource import get_path
 
-class Scene(Layer, Events):
-    ''' Scene base class '''
-    def __init__(self):
-        super(Scene, self).__init__()
-        
-    def shown(self):
-        self.engine.events.add_listener(self)
-        
-    def hidden(self):
-        self.engine.events.remove_listener(self)
-    
-    def run(self):
-        pass
-    
-    def render(self):
-        pass
+# dictionary of scenes
+# TODO - implement a system that auto detects scenes
+# basically enforce a specific naming scheme on scenes
+# so that we can get the scene name and determine that its 
+# actually a scene from the file name.
+# something like scene_SceneName.py or SceneName_scene.py could work.
+sceneInfo = {
+   "GameScene": "fofix.scenes.gamescene"
+}
 
-class SceneManager(Task):
-    ''' Manages the destruction/creation of scenes'''
-    def __init__(self):
-        super(SceneManager, self).__init__()
-        
-        self.currentScene = None
-        self.sceneName = None
-        
-        self.layer = None
-        self.events = None
-    
-    def create(self, name, *args):
-        self.layer = self.engine.layer
-        self.events = self.engine.events
-        
-        if self.currentScene:
-            self.remove()
-        self.sceneName = name
-        self.currentScene = scenefactory.create(name, *args)
-        self.layer.add(self.currentScene)
-        self.layer.add(self.currentScene)
-        
-    def remove(self):
-        self.layer.remove(self.currentScene)
-        self.currentScene = None
-        self.sceneName = None
-        
+def create(name, **args):
+    scene_name = importlib.import_module(sceneInfo[name])
+    return getattr(scene_name, name)(**args)

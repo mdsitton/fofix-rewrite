@@ -18,12 +18,12 @@
 # MA  02110-1301, USA.                                              #
 #####################################################################
 
-from fofix import window
-from fofix import context
-from fofix.events import EventManager
-from fofix.task import TaskManager
-from fofix.layer import LayerManager
-from fofix.scene import SceneManager
+from fofix.core import window
+from fofix.core import context
+from fofix.core.events import EventManager
+from fofix.core.task import TaskManager
+from fofix.core.layer import LayerManager
+from fofix.core.scene import SceneManager
 #from fofix.opengl import *
 
 import OpenGL.GL as gl

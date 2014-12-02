@@ -21,8 +21,8 @@
 import ctypes as ct
 import sdl2 as sdl
 
-from fofix.task import Task
-from fofix.keyconst import keymap, process_modkeys, process_key_char
+from fofix.core.task import Task
+from fofix.core.keyconst import keymap, process_modkeys, process_key_char
 
 class Events(Task):
     ''' Base event listener class '''

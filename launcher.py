@@ -29,8 +29,8 @@ import os
 if os.name == 'nt':
     os.environ['PYSDL2_DLL_PATH'] = os.path.abspath(os.path.join('.', 'dll'))
 
-from fofix.engine import Engine
-from fofix.config import Config, define_all
+from fofix.core.engine import Engine
+from fofix.core.config import Config, define_all
 
 def main():
 

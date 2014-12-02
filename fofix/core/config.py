@@ -21,7 +21,7 @@
 from configparser import ConfigParser
 import os
 
-from fofix.resource import Resource
+from fofix.core.resource import Resource
         
 class Config(object):
     ''' Configuration file manager

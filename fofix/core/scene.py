@@ -18,32 +18,52 @@
 # MA  02110-1301, USA.                                              #
 #####################################################################
 
-import platform
-import os
+from fofix.core.layer import Layer
+from fofix.core.task import Task
+from fofix.core.events import Events
+from fofix.core import scenefactory
 
-class Resource(object):
-    ''' Game recources, functions that will be usefull everywhere '''
-    def get_resource_path(self):
-        '''
-        Returns a path that holds the configuration files
-        '''
+class Scene(Layer, Events):
+    ''' Scene base class '''
+    def __init__(self):
+        super(Scene, self).__init__()
         
-        path = "."
+    def shown(self):
+        self.engine.events.add_listener(self)
         
-        osName = platform.system()
+    def hidden(self):
+        self.engine.events.remove_listener(self)
+    
+    def run(self):
+        pass
+    
+    def render(self):
+        pass
+
+class SceneManager(Task):
+    ''' Manages the destruction/creation of scenes'''
+    def __init__(self):
+        super(SceneManager, self).__init__()
         
-        appname = 'FoFiX' #Version.PROGRAM_UNIXSTYLE_NAME - todo
+        self.currentScene = None
+        self.sceneName = None
         
-        if osName == "Linux":
-            path = os.path.expanduser("~/." + appname)
-        elif osName == "Darwin" :
-            path = os.path.expanduser("~/Library/Preferences/" + appname)
-        elif osName == "Windows":
-            path = os.path.join(os.environ["APPDATA"], appname)
-            
-        try:
-            os.mkdir(path)
-        except:
-            pass
-            
-        return path
+        self.layer = None
+        self.events = None
+    
+    def create(self, name, *args):
+        self.layer = self.engine.layer
+        self.events = self.engine.events
+        
+        if self.currentScene:
+            self.remove()
+        self.sceneName = name
+        self.currentScene = scenefactory.create(name, *args)
+        self.layer.add(self.currentScene)
+        self.layer.add(self.currentScene)
+        
+    def remove(self):
+        self.layer.remove(self.currentScene)
+        self.currentScene = None
+        self.sceneName = None
+        

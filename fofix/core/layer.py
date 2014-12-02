@@ -18,20 +18,49 @@
 # MA  02110-1301, USA.                                              #
 #####################################################################
 
-from fofix.scene import Scene
+from fofix.core.task import Task
 
-class GameScene(Scene):
-    def __init__(self):
-        super(GameScene, self).__init__()
-    
-    def run(self):
-        pass#print ('herp')
+class Layer(Task):
+    ''' Base layer class '''
+    def shown(self):
+        pass
+        
+    def hidden(self):
+        pass
     
     def render(self):
-        pass#print ('derp')
+        pass
     
-    def key_up(self, key, mod):
-        pass#print ('hurrr')
+class LayerManager(Task):
+    ''' Manages layers '''
+    def __init__(self):
+        super(LayerManager, self).__init__()
         
-    def key_down(self, key, char, mod):
-        print (char)
+        self.layers = []
+        
+    def add(self, func):
+        if func not in self.layers:
+            self.task.add(func)
+            self.layers.append(func)
+            func.shown()
+    
+    def remove(self, func):
+        if func in self.layers:
+            func.hidden()
+            self.task.remove(func)
+            self.layers.remove(func)
+        
+    def give_top(self):
+        return self.layers[0]
+    
+    def remove_all(self):
+        for layer in self.layers:
+            self.remove(layer)
+    
+    def run(self):
+        pass
+    
+    def render(self):
+        for layer in self.layers:
+            layer.render()
+        
